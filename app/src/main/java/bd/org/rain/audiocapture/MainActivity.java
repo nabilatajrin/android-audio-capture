@@ -2,28 +2,21 @@ package bd.org.rain.audiocapture;
 
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
-
 import android.widget.Button;
 import android.widget.Toast;
-
 import java.io.IOException;
 import java.util.Random;
-
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
 import android.support.v4.app.ActivityCompat;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
-
     Button buttonStart, buttonStop, buttonPlayLastRecordAudio,
             buttonStopPlayingRecording ;
     String AudioSavePathInDevice = null;
@@ -37,30 +30,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         buttonStart = (Button) findViewById(R.id.button);
         buttonStop = (Button) findViewById(R.id.button2);
         buttonPlayLastRecordAudio = (Button) findViewById(R.id.button3);
         buttonStopPlayingRecording = (Button)findViewById(R.id.button4);
-
         buttonStop.setEnabled(false);
         buttonPlayLastRecordAudio.setEnabled(false);
         buttonStopPlayingRecording.setEnabled(false);
-
         random = new Random();
-
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if(checkPermission()) {
-
                     AudioSavePathInDevice =
                             Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +
                                     CreateRandomAudioFileName(5) + "AudioRecording.3gp";
-
                     MediaRecorderReady();
-
                     try {
                         mediaRecorder.prepare();
                         mediaRecorder.start();
@@ -71,10 +56,8 @@ public class MainActivity extends AppCompatActivity {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-
                     buttonStart.setEnabled(false);
                     buttonStop.setEnabled(true);
-
                     Toast.makeText(MainActivity.this, "Recording started",
                             Toast.LENGTH_LONG).show();
                 } else {
@@ -82,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
         buttonStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,21 +73,17 @@ public class MainActivity extends AppCompatActivity {
                 buttonPlayLastRecordAudio.setEnabled(true);
                 buttonStart.setEnabled(true);
                 buttonStopPlayingRecording.setEnabled(false);
-
                 Toast.makeText(MainActivity.this, "Recording Completed",
                         Toast.LENGTH_LONG).show();
             }
         });
-
         buttonPlayLastRecordAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) throws IllegalArgumentException,
                     SecurityException, IllegalStateException {
-
                 buttonStop.setEnabled(false);
                 buttonStart.setEnabled(false);
                 buttonStopPlayingRecording.setEnabled(true);
-
                 mediaPlayer = new MediaPlayer();
                 try {
                     mediaPlayer.setDataSource(AudioSavePathInDevice);
@@ -113,13 +91,11 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
                 mediaPlayer.start();
                 Toast.makeText(MainActivity.this, "Recording Playing",
                         Toast.LENGTH_LONG).show();
             }
         });
-
         buttonStopPlayingRecording.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -136,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     public void MediaRecorderReady(){
         mediaRecorder=new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -144,24 +119,20 @@ public class MainActivity extends AppCompatActivity {
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
         mediaRecorder.setOutputFile(AudioSavePathInDevice);
     }
-
     public String CreateRandomAudioFileName(int string){
         StringBuilder stringBuilder = new StringBuilder( string );
         int i = 0 ;
         while(i < string ) {
             stringBuilder.append(RandomAudioFileName.
                     charAt(random.nextInt(RandomAudioFileName.length())));
-
             i++ ;
         }
         return stringBuilder.toString();
     }
-
     private void requestPermission() {
         ActivityCompat.requestPermissions(MainActivity.this, new
                 String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -172,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
                             PackageManager.PERMISSION_GRANTED;
                     boolean RecordPermission = grantResults[1] ==
                             PackageManager.PERMISSION_GRANTED;
-
                     if (StoragePermission && RecordPermission) {
                         Toast.makeText(MainActivity.this, "Permission Granted",
                                 Toast.LENGTH_LONG).show();
@@ -183,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-
     public boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(),
                 WRITE_EXTERNAL_STORAGE);
